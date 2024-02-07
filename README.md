@@ -142,7 +142,7 @@ You're done but in case you need to remove it or want to rename it, you can find
 ## Running the demo
 
 
-### You can watch the following demo on YouTube to get an idea of how to setup the demo environment
+### <a href="https://www.youtube.com/watch?v=Om-k08GDoZ4">You can watch the following demo on YouTube to get an idea of how to setup the demo environment</a>
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Om-k08GDoZ4/0.jpg)](https://www.youtube.com/watch?v=Om-k08GDoZ4)
 
