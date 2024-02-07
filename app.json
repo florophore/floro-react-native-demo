@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "FloroExpo",
+    "slug": "FloroExpo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera."
+      },
+      "bundleIdentifier": "com.anonymous.FloroExpo"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "package": "com.anonymous.FloroExpo"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."
+        }
+      ],
+      [
+        "expo-font", {
+          "fonts": [
+            "node_modules/@expo-google-fonts/raleway/Raleway_400Regular.ttf",
+            "node_modules/@expo-google-fonts/raleway/Raleway_400Regular_Italic.ttf",
+            "node_modules/@expo-google-fonts/raleway/Raleway_700Bold.ttf",
+            "node_modules/@expo-google-fonts/raleway/Raleway_700Bold_Italic.ttf",
+            "node_modules/@expo-google-fonts/maven-pro/MavenPro_400Regular.ttf",
+            "node_modules/@expo-google-fonts/maven-pro/MavenPro_700Bold.ttf"
+          ]
+        }
+      ]
+    ]
+  }
+}
