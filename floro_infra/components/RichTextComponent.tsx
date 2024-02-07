@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 //@ts-ignore
-import WindowOverlay from "../WindowOverlay";
+import WindowOverlay from "./WindowOverlay";
 import { View, Text } from "react-native";
 import { Portal } from "@gorhom/portal";
 import metaFloro from "../floro_modules/meta.floro";

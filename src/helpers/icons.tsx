@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useFloroIcons } from "../../floro_infra/contexts/icons/FloroIconsProvider";
 import { useThemePreference } from "../../floro_infra/contexts/themes/ThemePreferenceProvider";
 import { Icons } from "../../floro_infra/floro_modules/icon-generator/types";
