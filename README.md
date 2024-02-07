@@ -74,7 +74,7 @@ From the Floro desktop application click on the "Daemon Running Tab"
 
 <img src="./docs/imgs/download_tls.png" width="600">
 
-#### Your TLS certs will change everytime you switch IPs on your lan. Certs are rotated every 6 months. Ie. You do not need to repeat these steps but if you've trusted a cert before from 192.168.1.x but never trusted floro from 19.2.168.1.y, you will have to download the cert for 192.168.1.y.
+#### Your TLS certs will change every time you switch IPs on your lan. Certs are rotated every 6 months. Ie. You do not need to repeat these steps but if you've trusted a cert before from 192.168.1.x but never trusted floro from 19.2.168.1.y, you will have to download the cert for 192.168.1.y.
 
 
 ## Trusting a cert on IOS
@@ -433,7 +433,7 @@ build succeeded!
 ```
 Then we are good! Hopefully you're already on a branch but if not, make a branch and commit here (in git).
 
-Let's proceeed!
+Let's proceed!
 
 ### Create a Floro Repository (if you haven't already)
 
@@ -520,7 +520,7 @@ module.exports = function () {
 };
 ```
 
-running `floro module help` should produce the follwoing
+running `floro module help` should produce the following
 ```bash
 
 floro module
@@ -588,7 +588,7 @@ To confirm the command worked open up `floro_infra/meta.floro.json`
 
 ```
 
-The floro_infra/meta.floro.json should be commited to git (not git ignored). However, it is generated code and should not be manually altered. Resolve git conflicts on it with `floro module sync -b`.
+The floro_infra/meta.floro.json should be committed to git (not git ignored). However, it is generated code and should not be manually altered. Resolve git conflicts on it with `floro module sync -b`.
 
 ## API Overview
 
@@ -1309,7 +1309,7 @@ In order to sync text in production we need to make an API call when the user op
 
 ## Remote API Key (Prerequisite)
 
-1) Depending on if your repository is a personal or organization, navigate in floro either to your home dashboard or the organization dashbaord.
+1) Depending on if your repository is a personal or organization, navigate in floro either to your home dashboard or the organization dashboard.
 
 2) In either case click `Developer Settings`
 
@@ -1463,11 +1463,11 @@ export const syncText = async (): Promise<LocalizedPhrases> => {
 
 ## DO NOT ABUSE OUR SERVERS!
 
-If you are calling our api endpoints directly from react native -- pleaes do not abuse us!
+If you are calling our api endpoints directly from react native -- please do not abuse us!
 
-We want floro to be free and hassel free. This means we are operating on a good faith basis.
+We want floro to be free and hassle free. This means we are operating on a good faith basis.
 
-It takes only takes one jerk pinging our servers every 30 seconds, from each one their user's mobile devices for us to introduce rate limiting and restricting API acess to known hosts. Don't be that person.
+It takes only takes one jerk pinging our servers every 30 seconds, from each one their user's mobile devices for us to introduce rate limiting and restricting API access to known hosts. Don't be that person.
 
 Please only check for updates when your app launches, do not repeatedly poll us. I promise it will not be a good experience for your users to see your typos getting fixed in real time (you'll probably freak them out).
 
@@ -1549,7 +1549,7 @@ export const useFloroText = () => {
 
 ### Developing with Floro
 
-For developers, we recommend avoiding branches and pushing to and pulling from main directly. I know, this sounds like advice that breaks everything you know about good version control hygiene but it's the simplest approach to dealing with submoduled system designs and makes the collaborative experience far simpler. This does mean you will be merging and resolving floro merge conflicts locally, not in merge requests. Remember, floro state is data, not code, it's easy to over analogize floro to git. Strucuted version control does not have the same risks as plain text version control.
+For developers, we recommend avoiding branches and pushing to and pulling from main directly. I know, this sounds like advice that breaks everything you know about good version control hygiene but it's the simplest approach to dealing with submoduled system designs and makes the collaborative experience far simpler. This does mean you will be merging and resolving floro merge conflicts locally, not in merge requests. Remember, floro state is data, not code, it's easy to over analogize floro to git. Structured version control does not have the same risks as plain text version control.
 
 Whatever the case may be you, if you are adding content to floro and developing features in tandem, you will need to your floro changes to end up in your main floro branch before you can merge your git changes into your git main branch.
 
