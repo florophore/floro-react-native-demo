@@ -37,7 +37,7 @@ npx expo run:android --device
 If you want to actually experience the demo in full, please download the Floro Desktop app from [Floro](https://floro.io) if you haven't already
 
 #### Clone the Floro Repository in Floro
-Next clone the repository for this project
+You can find the repository for this project here.
 [Clone Floro Repo Here](https://floro.io/app-proxy/repo/@/floro/rn-demo).
 
 (This will only work when the Floro desktop client is running)
@@ -214,7 +214,7 @@ Ours looks like this
 </network-security-config>
 ```
 
-You probably should not have `cleartextTrafficPermitted="true"` for production but you do need your `<base-config>` to allow for trusting of user-certificates if you want to be able to test copy changes in production builds. Do NOT put `<certifcates src="user">` in a `<debug-overrides>` if you want live offline testing in your production application. You may want to consult your security team if this something you want to do.
+You probably should not have `cleartextTrafficPermitted="true"` for production but you do need your `<base-config>` to allow for trusting of user-certificates if you want to be able to test copy changes in production builds. Do NOT put `<certifcates src="user">` in a `<debug-overrides>` if you want live offline testing in your production application. You may want to consult your security team if this is something you want to do.
 
 There may be better solutions for integrating network-security policies with Expo&EAS than the method described above.
 
@@ -417,7 +417,7 @@ export default Main; // this probably is called App.tsx in your project
 ## Pointing at your Floro Repo
 
 
-Before we start ripping things out, we should make sure everything builds correctly. To do that run the following
+Before we start ripping things out, we should make sure everything builds correctly. To do that, run the following
 
 ```bash
 # cwd = project root
@@ -437,7 +437,7 @@ Let's proceed!
 
 ### Create a Floro Repository (if you haven't already)
 
-If you are working on your project on behalf of an organization and intend to have multiple collaborative stakeholders, you should probably start an organization in floro and create the repository under the organization's account. At the time of writing this repositories cannot be transferred (they can be copied though). If you are a solo developer and don't expect to need to give edit permission to many others, feel free to create a personal repository. All personal and public (including organization) repositories are free of charge without any feature restrictions on floro.io, no payment details required.
+If you are working on your project on behalf of an organization and intend to have multiple collaborative stakeholders, you should probably start an organization in floro and create the repository under the organization's account. At the time of writing this, repositories cannot be transferred (they can be copied though). If you are a solo developer and don't expect to need to give edit permission to many others, feel free to create a personal repository. All personal and public (including organization) repositories are free of charge without any feature restrictions on floro.io, no payment details required.
 
 From either your "home dashboard" or your "organization's dashboard" click <b>create repository</b> in the lower left hand corner of the screen.
 
@@ -736,8 +736,86 @@ export const useIcon = <T extends keyof Icons>(key: T) => {
 };
 ```
 
+### Text
 
-### Configuring Rich Text Options
+#### Rich Text hook
+
+The rich text component is really simple. The entire API consists mostly of this pattern.
+
+```tsx
+
+  // type: (props) => React.ReactNode
+  const MyString = useRichText("example_group.my_string");
+
+  return (
+    <View>
+      <MyString/>
+    </View>
+  );
+
+```
+
+#### Plain Text hook
+
+To produce just a string we can call `usePlainText`.
+
+```tsx
+
+  // type: string
+  const myString = usePlainText("example_group.my_string");
+
+  return (
+    <View>
+      <Text>{myString}</Text>
+    </View>
+  );
+
+```
+
+#### Understanding the Rich Text hook
+
+Under the hood, rich text returns a `<View>` component wrapping a `<Text>` component and many nested text components.
+
+If we look back at our previous example, we can imagine under the hood the rich text component looks (conceptually) something like this.
+
+```tsx
+
+
+
+
+const ExampleStringsTitle = useRichText(
+  "string_examples.string_examples_title"
+);
+// is sort of equivalent to
+const ExampleStringsTitle = (props: {viewProps, richTextOptions}) => {
+  return (
+    <View {...viewProps}>
+      <Text style={richTextOptions.textStyles}>{'Hello '}
+        <Text style={{fontWeight: "bold", ...richTextOptions.textStyles}}>{'World!'}</Text>
+      </Text>
+    </View>
+  )
+}
+
+return (
+
+    <ExampleStringsTitle
+      viewProps={{
+        style: {
+          background: "blue",
+          flex: 1
+        }
+      }}
+      richTextOptions={{
+        textStyles: "red",
+      }}
+    />
+)
+
+```
+
+
+#### Configuring Rich Text Options
 
 Rich text is the best feature of floro in react-native. To configure rich text to work properly you need to adapt the fonts to the set of fonts you use. To do this open
 
@@ -845,60 +923,18 @@ export interface RichTextProps<T extends keyof PhraseKeys | unknown> {
 ```
 
 
-### Understanding the Rich Text Component
-
-Under the hood, rich text returns a `<View>` component wrapping a `<Text>` component and many nested text components.
-
-If we look back at our previous example, we can imagine under the hood the rich text component looks (conceptually) something like this.
-
-```tsx
-
-
-
-
-const ExampleStringsTitle = useRichText(
-  "string_examples.string_examples_title"
-);
-// is sort of equivalent to
-const ExampleStringsTitle = (props: {viewProps, richTextOptions}) => {
-  return (
-    <View {...viewProps}>
-      <Text style={richTextOptions.textStyles}>{'Hello '}
-        <Text style={{fontWeight: "bold", ...richTextOptions.textStyles}}>{'World!'}</Text>
-      </Text>
-    </View>
-  )
-}
-
-return (
-
-    <ExampleStringsTitle
-      viewProps={{
-        style: {
-          background: "blue",
-          flex: 1
-        }
-      }}
-      richTextOptions={{
-        textStyles: "red",
-      }}
-    />
-)
-
-```
-
-
-### You're done integrating the APIs🎉! You're still pointing at the wrong floro repository but we'll fix that in second.
+### You're done integrating the APIs🎉!
 
 ### API Demo
 
 The entire API is typesafe and provides excellent autocompletion for IDEs that support auto-completion.
 
-Please see the <a href="https://floro.io/docs">Floro Docs</a> for an in depth review of each of the plugins.
+Please see the <a href="https://floro.io/docs">Floro Docs</a> for an in depth overview of each of the plugins.
 
+
+This file is an abbreviation of  `src/components/Header.tsx` but gives a general sense of how styling and themed icons work.
 
 ```tsx
-
 // creates higher order styles that can be consumed as a hook
 const useStyles = createUseStyles(({paletteColor, themeColor, background}) => ({
   container: {
@@ -980,19 +1016,6 @@ const MyComponent = (props: Props) => {
     const debugFloroText = usePlainText(
       'header.debug_floro',
     );
-    /**
-     * useRichText returns a component Class that we render in the jsx
-    const DebugFloroText = useRichText(
-      'header.debug_floro',
-    );
-    ...
-    return (
-        <View>
-            <DebugFlorText/>
-        </View>
-    )
-    */
-
     return (
         <View style={styles.container}>
             <View style={styles.headContainer}>
@@ -1051,6 +1074,81 @@ return (
   </View>
 );
 
+```
+
+A good simple of the Text API is an abbreviation of the home screen `src/screens/HomeScreen.tsx`.
+
+```tsx
+const HomeScreen = () => {
+  const styles = useStyles();
+  const navigation = useNavigation();
+
+  const {count, setCount, remainingTaps} = useFloroDebugCounter();
+
+  const onIncreaseCount = useCallback(() => {
+    setCount(count + 1);
+  }, [count]);
+
+  const FloroWithIcon = useIcon("main.floro-with-text");
+
+  const contrastText = useThemeColor("contrast-text")
+  const contrastGray = useThemeColor("contrast-gray")
+  const white = usePaletteColor("white", "regular");
+
+  const WelcomeToFloro = useRichText("home_screen.welcome_to_demo");
+  const TapInstructions = useRichText("home_screen.tap_to_unlock_debug");
+
+  const UnlockedText = useRichText("home_screen.debug_mode_unlocked");
+
+  const ViewStringExamples = useRichText("home_screen.view_string_examples");
+
+  const onGoToExamples = useCallback(() => {
+    navigation.navigate('ExampleStringsScreen' as never)
+  }, [])
+
+  return (
+    <View style={styles.main}>
+      <View style={styles.top}>
+        <FloroWithIcon width={"60%"} height={"70%"} />
+        <TouchableOpacity onPress={onIncreaseCount}>
+          <View>
+            <WelcomeToFloro
+              textStyles={styles.textCenter}
+              richTextOptions={{
+                fontSize: 22,
+                color: contrastText,
+              }}
+            />
+            <View style={styles.instructionsWrapper}>
+              <TapInstructions
+                textStyles={styles.textCenter}
+                remainingTaps={remainingTaps}
+                richTextOptions={{
+                  fontSize: 18,
+                  color: contrastGray,
+                }}
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.bottom}>
+        <TouchableOpacity activeOpacity={0.8} onPress={onGoToExamples}>
+          <View style={styles.bottomButton}>
+            <Text>
+              <ViewStringExamples
+                richTextOptions={{
+                  fontSize: 24,
+                  color: white,
+                }}
+              />
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 ```
 
 For more in depth examples you can view any of the components in `src/screens` or `src/components`.
@@ -1568,7 +1666,55 @@ Floro has a command `floro module watch` that you can run from the `floro_infra`
 
 We recommend gitignoring floro_modules. However, if you are a solo developer, it may be easiest to just commit your floro_modules.
 
-If you do gitignore your floro_modules you may have to do some CI work to add pulling floro module state to your CI workflow. Please see the <a href="https://floro.io/docs">floro docs</a>.
+## CI & Deployment
+
+CI is relatively straightforward. If your repo is private, you will need to create a remote API key to pull the changes.
+
+An example of GH actions would be (you need to pull your npm deps before floro can build floro_modules)
+
+```yaml
+      - name: Install dependencies
+        run: npm install
+
+      - name: Add Floro CLI
+        run: npm install -g floro
+
+      - name: Build Floro Assets
+        working-directory: packages/common-generators
+        run: floro module build
+        env:
+          FLORO_REMOTE_API_KEY: ${{ secrets.FLORO_REMOTE_API_KEY }}
+```
+
+Here is an example of the <a href="https://github.com/florophore/floro-mono/blob/main/.github/workflows/create_build.yaml">github actions script</a> used on floro.io.
+
+
+In this example `floro build` uses the ENV VAR FLORO_REMOTE_API_KEY. In some cases you may not want the key saved in envs. An example of this is a docker container. In that case, you can pass the key in as an argument. To do that you can do the following
+
+Example Dockerfile:
+
+```dockerfile
+FROM node:16.16.0-alpine
+
+....
+
+ARG floro_remote_api_key_arg
+
+...
+
+RUN yarn install
+
+RUN npm install -g floro
+
+RUN floro module build -m packages/common-generators/floro.module.js -k $floro_remote_api_key_arg
+
+```
+
+Which could be invoked form a CI environment like so
+
+```bash
+docker build --build-arg floro_remote_api_key_arg=${{ secrets.FLORO_REMOTE_API_KEY }}
+```
 
 
 ### Your README.md
