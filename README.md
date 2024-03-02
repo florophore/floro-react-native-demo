@@ -592,6 +592,232 @@ The floro_infra/meta.floro.json should be committed to git (not git ignored). Ho
 
 ## API Overview
 
+The entire API is typesafe and provides excellent autocompletion for IDEs that support auto-completion.
+
+Please see the <a href="https://floro.io/docs">Floro Docs</a> for an in depth overview of each of the plugins.
+
+
+This file is an abbreviation of  `src/components/Header.tsx` but gives a general sense of how styling and themed icons work.
+
+```tsx
+// creates higher order styles that can be consumed as a hook
+const useStyles = createUseStyles(({paletteColor, themeColor, background}) => ({
+  container: {
+    height: 72,
+    width: '100%',
+  },
+  headContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    padding: 8,
+    justifyContent: 'space-between',
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  debugButton: {
+    marginLeft: 12,
+    // palette API
+    color: paletteColor('blue', 'regular'),
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  themeSwitcherContainer: {
+    alignItems: 'center',
+    width: 72,
+    height: 32,
+    borderWidth: 1,
+    borderRadius: 16,
+    // themeApi
+    borderColor: themeColor('purple-theme'),
+  },
+  ...
+});
+
+interface Props {
+    onOpenLanguages: () => void;
+    onOpenDebug: () => void;
+}
+
+const MyComponent = (props: Props) => {
+
+    const styles = useStyles();
+
+    /**
+     * themes api
+    */
+    const {currentTheme, selectColorTheme} = useThemePreference()
+    const themeBackground = useThemeBackground();
+
+    /**
+     * icons API
+    */
+    const RoundIcon = useIcon("front-page.floro-round");
+    const MoonIcon = useIcon("front-page.moon");
+    const SunIcon = useIcon("front-page.sun");
+    const LanguageIcon = useIcon("front-page.language");
+    const DropDownArrow = useIcon("front-page.drop-down-arrow");
+
+    const ThemeIcon = useMemo(() => {
+        if (currentTheme == 'dark') {
+            return MoonIcon
+        }
+        return SunIcon;
+    }, [currentTheme, MoonIcon, SunIcon]);
+
+    const onToggleTheme = useCallback(() => {
+        selectColorTheme(currentTheme == 'light' ? 'dark' : 'light');
+    }, [currentTheme])
+
+    /**
+     * text API
+    */
+    // usePlainText returns a string (this cannot be debugged, since it's just ASCII)
+    const debugFloroText = usePlainText(
+      'header.debug_floro',
+    );
+    return (
+        <View style={styles.container}>
+            <View style={styles.headContainer}>
+                <View style={styles.leftContainer}>
+                    <RoundIcon height={56}/>
+                    <TouchableOpacity style={{zIndex: 200}} onPress={props.onOpenDebug}>
+                        <View style={styles.row}>
+                        <Text style={styles.debugButton}>{debugFloroText}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.rightContainer}>
+                    <TouchableOpacity onPress={onToggleTheme}>
+                        <View style={styles.themeSwitcherContainer}>
+                            <View style={styles.themeInnerContainer}>
+                                <Animated.View style={{
+                                    ...styles.themeCircle,
+                                    backgroundColor: themeBackground,
+                                    transform: [{
+                                        translateX: themeTranslateX
+                                    }]
+                                }}>
+                                    <ThemeIcon width={14} height={14}/>
+                                </Animated.View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    <View style={styles.divider}/>
+                    <TouchableOpacity onPress={props.onOpenLanguages}>
+                        <View style={styles.languageSwitcherContainer}>
+                            <LanguageIcon width={24} height={24}/>
+                            <DropDownArrow width={24} height={24}/>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+    )
+
+}
+```
+
+`useIcon` can also allow for icon variants. For example imagine your icon changes color when it is focused. You can then do something like
+
+```tsx
+...
+const [iconIsFocused, setIconIsFocused] = useState(true);
+const MyIcon = useIcon("my.icon");
+...
+
+return (
+  <View>
+    ...
+      <MyIcon variant={iconIsFocused ? "focused" : "default"} with={40} height={40}/>
+    ...
+  </View>
+);
+
+```
+
+A good simple of the Text API is an abbreviation of the home screen `src/screens/HomeScreen.tsx`.
+
+```tsx
+const HomeScreen = () => {
+  const styles = useStyles();
+  const navigation = useNavigation();
+
+  const {count, setCount, remainingTaps} = useFloroDebugCounter();
+
+  const onIncreaseCount = useCallback(() => {
+    setCount(count + 1);
+  }, [count]);
+
+  const FloroWithIcon = useIcon("main.floro-with-text");
+
+  const contrastText = useThemeColor("contrast-text")
+  const contrastGray = useThemeColor("contrast-gray")
+  const white = usePaletteColor("white", "regular");
+
+  const WelcomeToFloro = useRichText("home_screen.welcome_to_demo");
+  const TapInstructions = useRichText("home_screen.tap_to_unlock_debug");
+
+  const UnlockedText = useRichText("home_screen.debug_mode_unlocked");
+
+  const ViewStringExamples = useRichText("home_screen.view_string_examples");
+
+  const onGoToExamples = useCallback(() => {
+    navigation.navigate('ExampleStringsScreen' as never)
+  }, [])
+
+  return (
+    <View style={styles.main}>
+      <View style={styles.top}>
+        <FloroWithIcon width={"60%"} height={"70%"} />
+        <TouchableOpacity onPress={onIncreaseCount}>
+          <View>
+            <WelcomeToFloro
+              textStyles={styles.textCenter}
+              richTextOptions={{
+                fontSize: 22,
+                color: contrastText,
+              }}
+            />
+            <View style={styles.instructionsWrapper}>
+              <TapInstructions
+                textStyles={styles.textCenter}
+                remainingTaps={remainingTaps}
+                richTextOptions={{
+                  fontSize: 18,
+                  color: contrastGray,
+                }}
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.bottom}>
+        <TouchableOpacity activeOpacity={0.8} onPress={onGoToExamples}>
+          <View style={styles.bottomButton}>
+            <Text>
+              <ViewStringExamples
+                richTextOptions={{
+                  fontSize: 24,
+                  color: white,
+                }}
+              />
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+```
+
+For more in depth examples you can view any of the components in `src/screens` or `src/components`.
+
 ### Styles
 
 This part may irk you if you already are using something like uni-styles. <b>You do not need this hook if you are just integrating text and/or icons!</b>
@@ -921,237 +1147,6 @@ export interface RichTextProps<T extends keyof PhraseKeys | unknown> {
 }
 
 ```
-
-
-### You're done integrating the APIs🎉!
-
-### API Demo
-
-The entire API is typesafe and provides excellent autocompletion for IDEs that support auto-completion.
-
-Please see the <a href="https://floro.io/docs">Floro Docs</a> for an in depth overview of each of the plugins.
-
-
-This file is an abbreviation of  `src/components/Header.tsx` but gives a general sense of how styling and themed icons work.
-
-```tsx
-// creates higher order styles that can be consumed as a hook
-const useStyles = createUseStyles(({paletteColor, themeColor, background}) => ({
-  container: {
-    height: 72,
-    width: '100%',
-  },
-  headContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    padding: 8,
-    justifyContent: 'space-between',
-  },
-  leftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  debugButton: {
-    marginLeft: 12,
-    // palette API
-    color: paletteColor('blue', 'regular'),
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  themeSwitcherContainer: {
-    alignItems: 'center',
-    width: 72,
-    height: 32,
-    borderWidth: 1,
-    borderRadius: 16,
-    // themeApi
-    borderColor: themeColor('purple-theme'),
-  },
-  ...
-});
-
-interface Props {
-    onOpenLanguages: () => void;
-    onOpenDebug: () => void;
-}
-
-const MyComponent = (props: Props) => {
-
-    const styles = useStyles();
-
-    /**
-     * themes api
-    */
-    const {currentTheme, selectColorTheme} = useThemePreference()
-    const themeBackground = useThemeBackground();
-
-    /**
-     * icons API
-    */
-    const RoundIcon = useIcon("front-page.floro-round");
-    const MoonIcon = useIcon("front-page.moon");
-    const SunIcon = useIcon("front-page.sun");
-    const LanguageIcon = useIcon("front-page.language");
-    const DropDownArrow = useIcon("front-page.drop-down-arrow");
-
-    const ThemeIcon = useMemo(() => {
-        if (currentTheme == 'dark') {
-            return MoonIcon
-        }
-        return SunIcon;
-    }, [currentTheme, MoonIcon, SunIcon]);
-
-    const onToggleTheme = useCallback(() => {
-        selectColorTheme(currentTheme == 'light' ? 'dark' : 'light');
-    }, [currentTheme])
-
-    /**
-     * text API
-    */
-    // usePlainText returns a string (this cannot be debugged, since it's just ASCII)
-    const debugFloroText = usePlainText(
-      'header.debug_floro',
-    );
-    return (
-        <View style={styles.container}>
-            <View style={styles.headContainer}>
-                <View style={styles.leftContainer}>
-                    <RoundIcon height={56}/>
-                    <TouchableOpacity style={{zIndex: 200}} onPress={props.onOpenDebug}>
-                        <View style={styles.row}>
-                        <Text style={styles.debugButton}>{debugFloroText}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.rightContainer}>
-                    <TouchableOpacity onPress={onToggleTheme}>
-                        <View style={styles.themeSwitcherContainer}>
-                            <View style={styles.themeInnerContainer}>
-                                <Animated.View style={{
-                                    ...styles.themeCircle,
-                                    backgroundColor: themeBackground,
-                                    transform: [{
-                                        translateX: themeTranslateX
-                                    }]
-                                }}>
-                                    <ThemeIcon width={14} height={14}/>
-                                </Animated.View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <View style={styles.divider}/>
-                    <TouchableOpacity onPress={props.onOpenLanguages}>
-                        <View style={styles.languageSwitcherContainer}>
-                            <LanguageIcon width={24} height={24}/>
-                            <DropDownArrow width={24} height={24}/>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </View>
-    )
-
-}
-```
-
-`useIcon` can also allow for icon variants. For example imagine your icon changes color when it is focused. You can then do something like
-
-```tsx
-...
-const [iconIsFocused, setIconIsFocused] = useState(true);
-const MyIcon = useIcon("my.icon");
-...
-
-return (
-  <View>
-    ...
-      <MyIcon variant={iconIsFocused ? "focused" : "default"} with={40} height={40}/>
-    ...
-  </View>
-);
-
-```
-
-A good simple of the Text API is an abbreviation of the home screen `src/screens/HomeScreen.tsx`.
-
-```tsx
-const HomeScreen = () => {
-  const styles = useStyles();
-  const navigation = useNavigation();
-
-  const {count, setCount, remainingTaps} = useFloroDebugCounter();
-
-  const onIncreaseCount = useCallback(() => {
-    setCount(count + 1);
-  }, [count]);
-
-  const FloroWithIcon = useIcon("main.floro-with-text");
-
-  const contrastText = useThemeColor("contrast-text")
-  const contrastGray = useThemeColor("contrast-gray")
-  const white = usePaletteColor("white", "regular");
-
-  const WelcomeToFloro = useRichText("home_screen.welcome_to_demo");
-  const TapInstructions = useRichText("home_screen.tap_to_unlock_debug");
-
-  const UnlockedText = useRichText("home_screen.debug_mode_unlocked");
-
-  const ViewStringExamples = useRichText("home_screen.view_string_examples");
-
-  const onGoToExamples = useCallback(() => {
-    navigation.navigate('ExampleStringsScreen' as never)
-  }, [])
-
-  return (
-    <View style={styles.main}>
-      <View style={styles.top}>
-        <FloroWithIcon width={"60%"} height={"70%"} />
-        <TouchableOpacity onPress={onIncreaseCount}>
-          <View>
-            <WelcomeToFloro
-              textStyles={styles.textCenter}
-              richTextOptions={{
-                fontSize: 22,
-                color: contrastText,
-              }}
-            />
-            <View style={styles.instructionsWrapper}>
-              <TapInstructions
-                textStyles={styles.textCenter}
-                remainingTaps={remainingTaps}
-                richTextOptions={{
-                  fontSize: 18,
-                  color: contrastGray,
-                }}
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.bottom}>
-        <TouchableOpacity activeOpacity={0.8} onPress={onGoToExamples}>
-          <View style={styles.bottomButton}>
-            <Text>
-              <ViewStringExamples
-                richTextOptions={{
-                  fontSize: 24,
-                  color: white,
-                }}
-              />
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-```
-
-For more in depth examples you can view any of the components in `src/screens` or `src/components`.
 
 ## Eliminating what we don't need
 
